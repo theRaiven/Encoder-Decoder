@@ -4,7 +4,7 @@
     {
         private static bool IsValidSymbol(string token)
         {
-            string allowedSymbols = "+-*/=";
+            string allowedSymbols = "+-*/=r";
             return token.Length == 1 && allowedSymbols.Contains(token);
         }
         private static bool IsValidCode(string token)
@@ -47,6 +47,18 @@
                 sum += a.Value;
             }
 
+            double totalProb = 0.0;
+
+            foreach (var p in alphabet.Values)
+            {
+                if (p < 0 || p > 1)
+                    throw new Exception($"Ошибка: вероятность символа {p} должна быть в диапазоне [0,1].");
+
+                totalProb += p;
+            }
+
+            if (Math.Abs(totalProb - 1.0) > 1e-9)
+                throw new Exception($"Ошибка: сумма вероятностей должна быть равна 1 (сейчас {totalProb}).");
             for (int i = 0; i < cumulativeProb.Count; i++)
             {
                 midProbability.Add(alphabet.Values.ElementAt(i) / 2 + cumulativeProb[i]);
@@ -119,7 +131,7 @@
             List<int> wordLengths = new();
             foreach (var a in alphabet)
             {
-                wordLengths.Add((int)Math.Ceiling(-Math.Log(a.Value, 2)));
+                wordLengths.Add((int)Math.Ceiling(-Math.Log(a.Value / 2, 2)));
             }
             return wordLengths;
         }
@@ -193,8 +205,14 @@
                 {
                     throw new Exception($"Неверный формат вероятности: {probStr}");
                 }
+                if (alphabet.ContainsKey(symbol))
+                {
+                    throw new Exception($"Ошибка: символ '{symbol}' встречается более одного раза в файле алфавита.");
+                }
+                
                 alphabet[symbol] = probability;
             }
+            
             return alphabet;
         }
         public static List<string> ReadSequence(string filename)
