@@ -4,7 +4,7 @@
     {
         private static bool IsValidSymbol(string token)
         {
-            string allowedSymbols = "+-*/=r";
+            string allowedSymbols = "+-*/=";
             return token.Length == 1 && allowedSymbols.Contains(token);
         }
         private static bool IsValidCode(string token)
