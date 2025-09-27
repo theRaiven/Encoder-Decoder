@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace EncoderGUI
 {
@@ -11,13 +12,14 @@ namespace EncoderGUI
     {
         private Dictionary<string, double>? alphabet;
         private List<string>? sequence;
-        private StringBuilder? encoded;
-
+        private StringBuilder? resultCode;
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        private StringBuilder SaveData(StringBuilder codedStr, StringBuilder info)
+     => new StringBuilder(codedStr.ToString()).AppendLine().Append(info.ToString());
         private void btnLoadAlphabet_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -71,7 +73,6 @@ namespace EncoderGUI
 
                 txtOutput.Text = encodedStr.ToString();
 
-                // Выводим данные
                 StringBuilder info = new();
                 info.AppendLine("Кодовые слова:");
                 int idx = 0;
@@ -79,12 +80,15 @@ namespace EncoderGUI
                 {
                     info.AppendLine($"{symbol}: {codes[idx++]}");
                 }
+                
                 info.AppendLine($"\nСредняя длина кодового слова: {avgLength:F4} бит");
                 info.AppendLine($"Избыточность: {redundancy:F4} бит");
                 info.AppendLine($"Проверка неравенства Крафта: {kraft:F4} {(kraft <= 1 ? "✓" : "✗")}");
 
-                MessageBox.Show(info.ToString(), "Результаты кодирования");
+                resultCode = SaveData(encodedStr, info);
 
+
+                MessageBox.Show(info.ToString(), "Результаты кодирования");
             }
             catch (Exception ex)
             {
@@ -114,9 +118,12 @@ namespace EncoderGUI
                 {
                     info.AppendLine($"{symbol}: {codes[idx++]}");
                 }
+                
                 info.AppendLine($"\nСредняя длина кодового слова: {avgLength:F4} бит");
                 info.AppendLine($"Избыточность: {redundancy:F4} бит");
                 info.AppendLine($"Проверка неравенства Крафта: {kraft:F4} {(kraft <= 1 ? "✓" : "✗")}");
+
+                resultCode = SaveData(decodedStr, info);
 
                 MessageBox.Show(info.ToString(), "Результаты декодирования");
             }
@@ -125,6 +132,33 @@ namespace EncoderGUI
                 MessageBox.Show("Ошибка декодирования:\n" + ex.Message);
             }
         }
+        private void btnSaveOutput_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (resultCode is null || resultCode.Length == 0)
+                {
+                    MessageBox.Show("Нет данных для сохранения", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
+                SaveFileDialog sfd = new SaveFileDialog
+                {
+                    Filter = "Text files (*.txt)|*.txt",
+                    DefaultExt = ".txt",
+                    Title = "Сохранить результат"
+                };
+
+                if (sfd.ShowDialog() == true)
+                {
+                    SaveEncodedToFile(sfd.FileName, resultCode);
+                    MessageBox.Show($"Результат сохранён в файл:\n{sfd.FileName}", "Сохранено", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении:\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

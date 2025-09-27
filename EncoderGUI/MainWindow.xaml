@@ -1,10 +1,9 @@
 ﻿<Window x:Class="EncoderGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Кодировщик" Height="400" Width="600">
+        Title="Метод кодирования Гильбера-Мура " Height="400" Width="600">
     <Grid Margin="10">
         <StackPanel>
-
             <Button Name="btnLoadAlphabet" Content="Загрузить алфавит" Click="btnLoadAlphabet_Click" Margin="5"/>
             <TextBox Name="txtAlphabetFile" Margin="5" IsReadOnly="True"/>
 
@@ -12,8 +11,9 @@
             <TextBox Name="txtSequenceFile" Margin="5" IsReadOnly="True"/>
 
             <Button Name="btnEncode" Content="Закодировать последовательность" Click="btnEncode_Click" Margin="5"/>
-            
             <Button Name="btnDecode" Content="Декодировать последовательность" Click="btnDecode_Click" Margin="5"/>
+            <Button Name="btnSaveOutput" Content="Сохранить результат" Click="btnSaveOutput_Click" Margin="5"/>
+
             <TextBox x:Name="txtOutput" Height="124" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Width="577"/>
         </StackPanel>
     </Grid>
