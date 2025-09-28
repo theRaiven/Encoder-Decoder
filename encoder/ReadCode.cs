@@ -1,18 +1,36 @@
 ﻿namespace Encoder
 {
+    /// <summary>
+    /// Крутой класс для работы с кодированием, декодированием и обработкой алфавитов(алфамит состоит из симвалов и соответствующими вероятностями).
+    /// </summary>
     public static class ReadCode
     {
+        /// <summary>
+        /// Проверяет, является ли символ допустимым для алфавита.
+        /// </summary>
+        /// <param name="token">Символ для проверки.</param>
+        /// <returns>true, если символ допустим, иначе false.</returns>
         private static bool IsValidSymbol(string token)
         {
             string allowedSymbols = "+-*/=";
             return token.Length == 1 && allowedSymbols.Contains(token);
         }
+        /// <summary>
+        /// Проверяет, является ли строка допустимым кодом (состоящим только из '0' и '1').
+        /// </summary>
+        /// <param name="token">Строка для проверки.</param>
+        /// <returns>true, если строка является бинарным кодом, иначе false.</returns>
         private static bool IsValidCode(string token)
         {
             return !string.IsNullOrWhiteSpace(token) &&
                    token.All(c => c == '0' || c == '1');
         }
-        
+        /// <summary>
+        /// Преобразует число в двоичную дробь заданной длины.
+        /// </summary>
+        /// <param name="value">Число для преобразования.</param>
+        /// <param name="length">Количество бит в результате.</param>
+        /// <returns>Строка двоичной дроби.</returns>
         private static string ToBinaryFraction(double value, int length)
         {
             var bits = new StringBuilder();
@@ -34,6 +52,11 @@
 
             return bits.ToString();
         }
+        /// <summary>
+        /// Создает код для сивмолов алфавита, вычисляет среднюю длину кода, избыточность и значение неравенства Крафта.
+        /// </summary>
+        /// <param name="alphabet">Алфавит символов с соответствующими вероятностями каждому символу.</param>
+        /// <returns>Кортеж: список кодов, средняя длина, избыточность, значение неравентсва Крафта.</returns>
         public static (List<string> codes, double avgLength, double redundancy, double kraft) GetCodeForSymbol(Dictionary<string, double> alphabet)
         {
             List<double> cumulativeProb = new();
@@ -81,7 +104,12 @@
 
             return (codeWord, avgLength, redundancy, kraftValue);
         }
-
+        /// <summary>
+        /// Декодирует последовательность кодовых слов в исходный текст.
+        /// </summary>
+        /// <param name="alphabet">Алфавит символов с вероятностями.</param>
+        /// <param name="sequence">Последовательность кодовых слов для декодирования.</param>
+        /// <returns>Кортеж: декодированный текст, список кодов, средняя длина, избыточность, значение Крафта.</returns>
         public static (StringBuilder decoded, List<string> codes, double avgLength, double redundancy, double kraft) Decoding(Dictionary<string, double> alphabet, List<string> sequence)
         {
             var (codeWord, avgLength, redundancy, kraft) = GetCodeForSymbol(alphabet);
@@ -103,6 +131,12 @@
 
             return (decoded, codeWord, avgLength, redundancy, kraft);
         }
+        /// <summary>
+        /// Кодирует последовательность символов в бинарный кот :).
+        /// </summary>
+        /// <param name="alphabet">Алфавит символов с вероятностями.</param>
+        /// <param name="sequence">Список символов для кодирования.</param>
+        /// <returns>Кортеж: закодированная строка, список кодов, средняя длина, избыточность, значение Крафта.</returns>
         public static (StringBuilder encoded, List<string> codes, double avgLength, double redundancy, double kraft) Encoding(Dictionary<string, double> alphabet, List<string> sequence)
         {
             var (codeWord, avgLength, redundancy, kraft) = GetCodeForSymbol(alphabet);
@@ -125,7 +159,11 @@
 
             return (encoded, codeWord, avgLength, redundancy, kraft);
         }
-
+        /// <summary>
+        /// Вычисляет длину кода для каждого символа алфавита.
+        /// </summary>
+        /// <param name="alphabet">Алфавит символов с вероятностями.</param>
+        /// <returns>Список длин кодовых слов.</returns>
         public static List<int> CalculateWordLengths(Dictionary<string, double> alphabet)
         {
             List<int> wordLengths = new();
@@ -135,6 +173,12 @@
             }
             return wordLengths;
         }
+        /// <summary>
+        /// Вычисляет избыточность кода.
+        /// </summary>
+        /// <param name="alphabet">Алфавит символов с вероятностями.</param>
+        /// <param name="wordLengths">Список длин кодовых слов.</param>
+        /// <returns>Избыточность.</returns>
         public static double CalculateRedundancy(Dictionary<string, double> alphabet, List<int> wordLengths)
         {
             double entropy = 0;
@@ -154,6 +198,12 @@
            
             return avgLength - entropy;
         }
+        /// <summary>
+        /// Вычисляет избыточность кода.
+        /// </summary>
+        /// <param name="alphabet">Алфавит символов с вероятностями.</param>
+        /// <param name="wordLengths">Список длин кодовых слов.</param>
+        /// <returns>Избыточность.</returns>
         public static double ChechKraft(List<int> wordLength)
         {
             double kraft = 0.0;
@@ -166,6 +216,11 @@
 
 
         //================================
+        /// <summary>
+        /// Сохраняет закодированную последовательность в файл.
+        /// </summary>
+        /// <param name="filename">Имя файла для сохранения.</param>
+        /// <param name="encoded">Закодированная строка.</param>
         public static void SaveEncodedToFile(string filename, StringBuilder encoded)
         {
             try
@@ -179,6 +234,11 @@
                 throw;
             }
         }
+        /// <summary>
+        /// Считывает алфавит из файла.
+        /// </summary>
+        /// <param name="filename">Имя файла с алфавитом.</param>
+        /// <returns>Словарь с символами и вероятностями.</returns>
         public static Dictionary<string, double> ReadAlphabet(string filename)
         {
             var alphabet = new Dictionary<string, double>();
@@ -215,6 +275,11 @@
             
             return alphabet;
         }
+        /// <summary>
+        /// Считывает последовательность/закодированную последоватеьнсть из файла.
+        /// </summary>
+        /// <param name="filename">Имя файла с алфавитом.</param>
+        /// <returns>Список с символами последовательности.</returns>
         public static List<string> ReadSequence(string filename)
         {
             var sequence = new List<string>();

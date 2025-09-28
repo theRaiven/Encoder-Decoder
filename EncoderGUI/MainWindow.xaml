@@ -1,20 +1,95 @@
 ﻿<Window x:Class="EncoderGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Метод кодирования Гильбера-Мура " Height="400" Width="600">
+        Title="Метод кодирования Гильбера-Мура " Height="400" Width="600"
+        PreviewMouseWheel="Window_PreviewMouseWheel">
+
+    <!-- Фон окна -->
+    <Window.Background>
+        <ImageBrush ImageSource="D:\Study_Sort\V Семестр\Криптография ТПИ\лаба2\encoder\bin\Debug\net7.0\back1.jpg"
+                    Stretch="UniformToFill"/>
+    </Window.Background>
+
+    <!-- Ресурсы: стиль для всех кнопок -->
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#3c4043"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="24"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F6F9FE"/>
+                                <Setter Property="Foreground" Value="#174ea6"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="10" Opacity="0.4"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <!-- Pressed -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#e8f0fe"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="15" Opacity="0.5"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <!-- Focus -->
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4285f4"/>
+                            </Trigger>
+                            <!-- Disabled -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#ddd"/>
+                                <Setter Property="Foreground" Value="#888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="10">
+        <Grid.LayoutTransform>
+            <ScaleTransform x:Name="MainScale" ScaleX="1" ScaleY="1"/>
+        </Grid.LayoutTransform>
+
         <StackPanel>
-            <Button Name="btnLoadAlphabet" Content="Загрузить алфавит" Click="btnLoadAlphabet_Click" Margin="5"/>
-            <TextBox Name="txtAlphabetFile" Margin="5" IsReadOnly="True"/>
+            <Button Name="btnLoadAlphabet" Content="Загрузить алфавит" Click="btnLoadAlphabet_Click" Margin="5" Width="416" Height="40"/>
+            <TextBox Name="txtAlphabetFile" Margin="5" IsReadOnly="True" Width="415"/>
 
-            <Button Name="btnLoadSequence" Content="Загрузить последовательность" Click="btnLoadSequence_Click" Margin="5"/>
-            <TextBox Name="txtSequenceFile" Margin="5" IsReadOnly="True"/>
+            <Button Name="btnLoadSequence" Content="Загрузить последовательность" Click="btnLoadSequence_Click" Margin="5" Width="415"  Height="35"/>
+            <TextBox Name="txtSequenceFile" Margin="5" IsReadOnly="True" Width="415"/>
 
-            <Button Name="btnEncode" Content="Закодировать последовательность" Click="btnEncode_Click" Margin="5"/>
-            <Button Name="btnDecode" Content="Декодировать последовательность" Click="btnDecode_Click" Margin="5"/>
-            <Button Name="btnSaveOutput" Content="Сохранить результат" Click="btnSaveOutput_Click" Margin="5"/>
+            <Button Name="btnEncode" Content="Закодировать последовательность" Click="btnEncode_Click" Margin="5" Width="415"  Height="35"/>
+            <Button Name="btnDecode" Content="Декодировать последовательность" Click="btnDecode_Click" Margin="5" Width="415"  Height="35"/>
+            <Button Name="btnSaveOutput" Content="Сохранить результат" Click="btnSaveOutput_Click" Margin="5" Width="415"  Height="35"/>
 
-            <TextBox x:Name="txtOutput" Height="124" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Width="577"/>
+            <TextBox x:Name="txtOutput" Height="124"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto"
+                     Width="577"
+                     FontSize="14"/>
         </StackPanel>
     </Grid>
 </Window>

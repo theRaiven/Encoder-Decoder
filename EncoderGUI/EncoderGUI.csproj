@@ -13,4 +13,8 @@
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<ApplicationIcon>icone.ico</ApplicationIcon>
+	</PropertyGroup>
 </Project>
